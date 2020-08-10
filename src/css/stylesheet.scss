@@ -1,0 +1,26 @@
+@charset 'utf-8';
+@import '_normalize';
+@import '_normalizeCustomConfig';
+@import '_variable';
+@import '_font';
+@import '_debugger';
+@import '_mediaQuery';
+
+
+
+// CLASS LEVEL ------------------------------------------------------------------------------------
+.mainWrapper {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  justify-content: center;
+  text-align: center;
+  width: 100vw;
+  @include tablet {
+    flex-direction: column
+  }
+  @include desktop {
+    flex-direction: column
+  }
+}
