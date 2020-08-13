@@ -1,11 +1,10 @@
 import React from 'react';
 import './css/stylesheet.css';
+import DeviceOrientation from './components/DeviceOrientation';
 
 function App() {
   return (
-    <div class="mainWrapper">
-      <h1>HELLO WORLD</h1>
-    </div>
+    <DeviceOrientation></DeviceOrientation>
   );
 }
 
