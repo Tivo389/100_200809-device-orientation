@@ -378,6 +378,7 @@ a {
   flex-direction: column;
   height: 100vh;
   justify-content: center;
+  position: relative;
   text-align: center;
   width: 100vw; }
 
@@ -403,6 +404,29 @@ a {
   justify-content: center;
   align-items: center;
   border-radius: 999px;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: sans-serif;
   color: #FFFFFF;
-  font-size: 18px; }
+  font-weight: lighter;
+  letter-spacing: 0.025em;
+  font-size: 16px; }
+
+.deviceStatus {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 12px; }
+  .deviceStatus p {
+    text-align: left;
+    font-family: sans-serif;
+    font-weight: lighter;
+    line-height: 1.35;
+    font-size: 10px; }
+  .deviceStatus p + p {
+    margin-top: 0; }
+  .deviceStatus .deviceOrientationAccess,
+  .deviceStatus .userAgent {
+    margin-bottom: 0.5em; }
+  .deviceStatus .coordinates {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 16px;
+    line-height: 1.35; }
