@@ -5,7 +5,7 @@ class DeviceOrientation extends Component {
   // LIFECYCLE METHODS
   componentDidMount() {
     this.handleUserAgentString();
-    window.requestAnimationFrame(this.logCoordinates);
+    window.requestAnimationFrame(this.handleDeviceOrientation);
   }
   componentDidUpdate() {}
   componentWillUnmount() {}
@@ -28,17 +28,6 @@ class DeviceOrientation extends Component {
             Z / Yaw&ensp;&ensp;&ensp;/ Alpha: <span className="coordinatesZ">–</span>
           </p>
         </div>
-        {/* 3D BOX */}
-        <div class="cubeContainer">
-          <div class="cube">
-            <div class="cube__face cube__face--front">front</div>
-            <div class="cube__face cube__face--back">back</div>
-            <div class="cube__face cube__face--right">right</div>
-            <div class="cube__face cube__face--left">left</div>
-            <div class="cube__face cube__face--top">top</div>
-            <div class="cube__face cube__face--bottom">bottom</div>
-          </div>
-        </div>
         {/* ACTIVATION SECTION */}
         <div className="activationContainer">
           <p>Allow access to Device Orienation</p>
@@ -48,16 +37,29 @@ class DeviceOrientation extends Component {
               Allow
           </div>
         </div>
+        {/* 3D BOX */}
+        <div className="cubeContainer">
+          <div className="cube">
+            <div className="cubeFace cubeFaceFront">front</div>
+            <div className="cubeFace cubeFaceBack">back</div>
+            <div className="cubeFace cubeFaceRight">right</div>
+            <div className="cubeFace cubeFaceLeft">left</div>
+            <div className="cubeFace cubeFaceTop">top</div>
+            <div className="cubeFace cubeFaceBottom">bottom</div>
+          </div>
+        </div>
       </div>
     );
   }
 
   // FUNCTION: BASIC EXPLANATION HERE
-  // - Display the user string with better line-breaks.
-  handleUserAgentString = () => {
-    const target = document.querySelector('.userAgent');
-    const content = navigator.userAgent.replace(/[)]\s/g, ')<br>');
-    target.insertAdjacentHTML('afterbegin', content);
+  // -
+  applyCoordinatesToCube = (xValue, yValue, zValue) => {
+    console.log(`xValue: ${xValue}`);
+    console.log(`yValue: ${yValue}`);
+    console.log(`zValue: ${zValue}`);
+    let domCube =  document.querySelector('.cube');
+    domCube.style.transform = `translateZ(-100px) rotateX(${xValue}deg) rotateY(${yValue}deg) rotateZ(${zValue}deg)`;
   };
   // - On button click determine the device type and return a response
   handleButtonClick = () => {
@@ -66,18 +68,37 @@ class DeviceOrientation extends Component {
     if (iOSDevice && likelyToBeMobileDevice) {
       DeviceOrientationEvent.requestPermission().then(permissionState => {
         if (permissionState === 'granted') {
-          window.addEventListener('deviceorientation', throttle(this.logCoordinates, 500), true);
+          window.addEventListener('deviceorientation', throttle(this.handleDeviceOrientation, 10), true);
         }
       })
       .catch(console.error);
       this.updateDeviceStatus('Access Granted');
     } else if (likelyToBeMobileDevice) {
-      window.addEventListener('deviceorientation', throttle(this.logCoordinates, 500), true);
+      window.addEventListener('deviceorientation', throttle(this.handleDeviceOrientation, 10), true);
       this.updateDeviceStatus('Access Granted');
     } else {
       this.updateDeviceStatus("Access Not Granted<br>This doesn't seem like a mobile device");
     }
   }
+  // - Handle device orientation effect
+  handleDeviceOrientation = (e) => {
+    let domCoordinateX = document.querySelector('.coordinatesX');
+    let domCoordinateY = document.querySelector('.coordinatesY');
+    let domCoordinateZ = document.querySelector('.coordinatesZ');
+    let domCoordinateXValue = this.returnRoundedCoordinate(e.beta);
+    let domCoordinateYValue = this.returnRoundedCoordinate(e.gamma);
+    let domCoordinateZValue = this.returnRoundedCoordinate(e.alpha);
+    domCoordinateX.innerHTML = domCoordinateXValue;
+    domCoordinateY.innerHTML = domCoordinateYValue;
+    domCoordinateZ.innerHTML = domCoordinateZValue;
+    this.applyCoordinatesToCube(domCoordinateXValue, domCoordinateYValue, domCoordinateZValue);
+  };
+  // - Display the user string with better line-breaks.
+  handleUserAgentString = () => {
+    const target = document.querySelector('.userAgent');
+    const content = navigator.userAgent.replace(/[)]\s/g, ')<br>');
+    target.insertAdjacentHTML('afterbegin', content);
+  };
   // - Define the iOSDevice Variable with this function
   iOSDeviceDefine = () => {
     if (typeof DeviceOrientationEvent === 'undefined') {
@@ -86,15 +107,13 @@ class DeviceOrientation extends Component {
       return typeof DeviceOrientationEvent.requestPermission === 'function';
     };
   }
+  // - Return coordinate rounded to 2 decimal points.
+  returnRoundedCoordinate = (axisType) => {
+    return Math.round((axisType + Number.EPSILON) * 100) / 100;
+  };
   // - Update the device status
   updateDeviceStatus = (string) => {
     document.querySelector('.deviceOrientationAccess').innerHTML = string;
-  };
-  // Display the coordinates
-  logCoordinates = (e) => {
-    document.querySelector('.coordinatesX').innerHTML = Math.round((e.beta + Number.EPSILON) * 100) / 100;
-    document.querySelector('.coordinatesY').innerHTML = Math.round((e.gamma + Number.EPSILON) * 100) / 100;
-    document.querySelector('.coordinatesZ').innerHTML = Math.round((e.alpha + Number.EPSILON) * 100) / 100;
   };
 }
 
