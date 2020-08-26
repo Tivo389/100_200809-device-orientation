@@ -53,14 +53,16 @@ class DeviceOrientation extends Component {
   }
 
   // FUNCTION: BASIC EXPLANATION HERE
-  // -
+  // - Apply the retrieved coordinates to the cube.
   applyCoordinatesToCube = (xValue, yValue, zValue) => {
-    console.log(`xValue: ${xValue}`);
-    console.log(`yValue: ${yValue}`);
-    console.log(`zValue: ${zValue}`);
     let domCube =  document.querySelector('.cube');
-    domCube.style.transform = `translateZ(-100px) rotateX(${xValue}deg) rotateY(${yValue}deg) rotateZ(${zValue}deg)`;
+    domCube.style.transform = `
+    translateZ(-100px)
+    rotateX(${xValue}deg)
+    rotateY(${yValue}deg)
+    rotateZ(${zValue}deg)`;
   };
+
   // - On button click determine the device type and return a response
   handleButtonClick = () => {
     const likelyToBeMobileDevice = /Mobi|Android/i.test(navigator.userAgent);
@@ -80,6 +82,7 @@ class DeviceOrientation extends Component {
       this.updateDeviceStatus("Access Not Granted<br>This doesn't seem like a mobile device");
     }
   }
+
   // - Handle device orientation effect
   handleDeviceOrientation = (e) => {
     let domCoordinateX = document.querySelector('.coordinatesX');
@@ -93,12 +96,14 @@ class DeviceOrientation extends Component {
     domCoordinateZ.innerHTML = domCoordinateZValue;
     this.applyCoordinatesToCube(domCoordinateXValue, domCoordinateYValue, domCoordinateZValue);
   };
+
   // - Display the user string with better line-breaks.
   handleUserAgentString = () => {
     const target = document.querySelector('.userAgent');
     const content = navigator.userAgent.replace(/[)]\s/g, ')<br>');
     target.insertAdjacentHTML('afterbegin', content);
   };
+
   // - Define the iOSDevice Variable with this function
   iOSDeviceDefine = () => {
     if (typeof DeviceOrientationEvent === 'undefined') {
@@ -107,10 +112,12 @@ class DeviceOrientation extends Component {
       return typeof DeviceOrientationEvent.requestPermission === 'function';
     };
   }
+
   // - Return coordinate rounded to 2 decimal points.
   returnRoundedCoordinate = (axisType) => {
     return Math.round((axisType + Number.EPSILON) * 100) / 100;
   };
+
   // - Update the device status
   updateDeviceStatus = (string) => {
     document.querySelector('.deviceOrientationAccess').innerHTML = string;
